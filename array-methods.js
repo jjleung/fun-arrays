@@ -93,8 +93,6 @@ function isState(obj){
   return daStates.some(s => obj.state === s);
 }
 
-console.log(dataset.bankBalances.filter(isState));
-
 sumOfInterests = dataset.bankBalances.filter(isState).reduce((total,obj) => {
   return total += Math.round(obj.amount*18.9);
 },0)/100;
@@ -115,7 +113,25 @@ sumOfInterests = dataset.bankBalances.filter(isState).reduce((total,obj) => {
     round this number to the nearest 10th of a cent before moving on.
   )
  */
-var stateSums = null;
+var stateSums = {};
+
+(function stateSummer(){
+
+  data = dataset.bankBalances.map(obj => {
+    const newObj = {...obj};
+    // newObj.amount = Math.round(obj.amount * 1000)/1000;
+    return newObj;
+  }); 
+  data.forEach(obj => {
+    if(!stateSums[obj.state]){
+      stateSums[obj.state] = obj.amount*1;
+    }else{
+      stateSums[obj.state] = Math.round((stateSums[obj.state] + obj.amount*1)*1000)/1000;
+    }
+    
+  })
+})();
+
 
 /*
   for all states *NOT* in the following states:
