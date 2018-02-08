@@ -7,6 +7,8 @@ var dataset = require('./dataset.json');
 */
 var hundredThousandairs = null;
 
+hundredThousandairs = dataset.bankBalances.filter(obj => obj.amount > 100000);
+
 /*
   DO NOT MUTATE DATA.
 
@@ -25,6 +27,12 @@ var hundredThousandairs = null;
   assign the resulting new array to `datasetWithRoundedDollar`
 */
 var datasetWithRoundedDollar = null;
+
+datasetWithRoundedDollar = dataset.bankBalances.map(obj => {
+  const newObj = {...obj};
+  newObj.rounded = Math.round(obj.amount);
+  return newObj;
+}); 
 
 /*
   DO NOT MUTATE DATA.
@@ -51,8 +59,21 @@ var datasetWithRoundedDollar = null;
 */
 var datasetWithRoundedDime = null;
 
+datasetWithRoundedDime = dataset.bankBalances.map(obj => {
+  const newObj = {...obj};
+  newObj.roundedDime = Math.round(obj.amount * 10)/10;
+  return newObj;
+}); 
+
 // set sumOfBankBalances to be the sum of all value held at `amount` for each bank object
 var sumOfBankBalances = null;
+
+
+sumOfBankBalances = dataset.bankBalances.reduce((total,obj) => {
+  let res = total += obj.amount*1;
+  return Math.round(res*100)/100
+},0);
+
 
 /*
   from each of the following states:
@@ -66,6 +87,15 @@ var sumOfBankBalances = null;
   and then sum it all up into one value saved to `sumOfInterests`
  */
 var sumOfInterests = null;
+
+function isState(obj){ 
+  const daStates = ['WI', 'IL', 'WY', 'OH', 'GA','DE'];
+  return daStates.some(s => obj.state === s);
+}
+
+sumOfInterests = dataset.bankBalances.filter(isState).reduce((total,obj) => {
+  return total += Math.round(obj.amount*18.9);
+},0)/100;
 
 /*
   aggregate the sum of bankBalance amounts
@@ -83,7 +113,25 @@ var sumOfInterests = null;
     round this number to the nearest 10th of a cent before moving on.
   )
  */
-var stateSums = null;
+var stateSums = {};
+
+(function stateSummer(){
+
+  data = dataset.bankBalances.map(obj => {
+    const newObj = {...obj};
+    // newObj.amount = Math.round(obj.amount * 1000)/1000;
+    return newObj;
+  }); 
+  data.forEach(obj => {
+    if(!stateSums[obj.state]){
+      stateSums[obj.state] = obj.amount*1;
+    }else{
+      stateSums[obj.state] = Math.round((stateSums[obj.state] + obj.amount*1)*1000)/1000;
+    }
+    
+  })
+})();
+
 
 /*
   for all states *NOT* in the following states:
